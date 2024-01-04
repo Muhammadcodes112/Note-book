@@ -5,13 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Note-Book</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> -->
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 </head>
 <body>
-    <div id="wrapper">
+    <div id="wrapper" class="wrapper">
         <header>
             <div class="up">
                 <h3>Notes</h3>
-                <img src="./image/moon.png" alt="">
+                <div id="darkmode" style="width: 30px; height: 30px; background-color: blue; border-radius: 50px; display: flex; justify-content: center; align-items: center;">
+                    <box-icon name='moon' type='solid'></box-icon>
+                    <!-- <i class="fa fa-sun-o" aria-hidden="true"></i> -->
+                </div>
             </div>
             <div class="down">
                 <input class="search" placeholder="Search Notes.....">
@@ -21,55 +27,117 @@
         <div class="content">
             <div id="inner-content" class="inner-content">
                 <ul>
-                    <li>
-                        <span class="name">Name of the Wind</span>
-                        <span onclick="deleteTodo(this)" class="delete"><img src="./image/delete.png" alt=""></span>
+                    <li id="card">
+                        <div class="up">
+                            <span id="title" class="name">Name of the Wind</span>
+                            <span onclick="deleteTodo(this)" class="delete"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="down">
+                            <p id="date-display">date</p>
+                        </div>
                     </li>
-                    <li>
-                        <span class="name">The Wise Man's Fear</span>
-                        <span onclick="deleteTodo(this)" class="delete"><img src="./image/delete.png" alt=""></span>
+
+                    <li id="card">
+                        <div class="up">
+                            <span id="title" class="name">Gotham</span>
+                            <span onclick="deleteTodo(this)" class="delete"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="down">
+                            <p id="date-display">date</p>
+                        </div>
                     </li>
-                    <li>
-                        <span class="name">Kafka on the Shore</span>
-                        <span onclick="deleteTodo(this)" class="delete"><img src="./image/delete.png" alt=""></span>
-                    </li>
-                    <li>
-                        <span class="name">The Master and the Margarita</span>
-                        <span onclick="deleteTodo(this)" class="delete"><img src="./image/delete.png" alt=""></span>
+
+                    <li id="card">
+                        <div class="up">
+                            <span id="title" class="name">Star wars</span>
+                            <span onclick="deleteTodo(this)" class="delete"><i class="fa fa-trash" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="down">
+                            <p id="date-display">date</p>
+                        </div>
                     </li>
                 </ul>
-
-                <form id="add-book">
-                    <input id="todoInput" class="add" type="text" placeholder="Add Notes....">
-                    <button onclick="addTodo()">Add</button>
-                </form>
-
             </div>
+                <form id="add-book">
+                    <input class="add" type="text" placeholder="Add a Note..." />
+                    <button>Add</button>
+                </form>       
         </div>
     </div>
 
 
     <script>
 
+const addForm = document.forms['add-book'];
+    const todoList = document.querySelector('.inner-content ul');
 
-         // Function to add a new note
-    function addTodo() {
-        const todoInput = document.getElementById('todoInput');
-        const todoList = document.querySelector('.inner-content ul');
+    addForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const value = addForm.querySelector('input[type="text"]').value;
 
-        const todoText = todoInput.value.trim();
-        if (todoText !== '') {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <span class="name">${todoText}</span>
-                <span class="delete" onclick="deleteTodo(this)">
-                    <img src="./image/delete.png" alt="">
-                </span>
-            `;
-            todoList.appendChild(li);
-            todoInput.value = '';
+        // Create elements
+        const li = document.createElement('li');
+        const upDiv = document.createElement('div');
+        const titleSpan = document.createElement('span');
+        const deleteBtn = document.createElement('span');
+        const downDiv = document.createElement('div');
+        const dateP = document.createElement('p');
+
+        // Add content
+        deleteBtn.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
+        titleSpan.textContent = value;
+        dateP.classList.add('date-display');
+        dateP.textContent = getCurrentDate();
+
+        // Add classes
+        titleSpan.classList.add('name');
+        deleteBtn.classList.add('delete');
+        upDiv.classList.add('up');
+        downDiv.classList.add('down');
+
+        // Append to DOM
+        upDiv.appendChild(titleSpan);
+        upDiv.appendChild(deleteBtn);
+        downDiv.appendChild(dateP);
+        li.appendChild(upDiv);
+        li.appendChild(downDiv);
+        todoList.appendChild(li);
+
+        // Clear the input field after adding a book
+        addForm.querySelector('input[type="text"]').value = '';
+    });
+
+    // Function to delete a note
+    function deleteTodo(element) {
+        const li = element.closest('li');
+        if (li) {
+            li.remove();
         }
     }
+
+    // Function to get the current date
+    function getCurrentDate() {
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        const currentDate = new Date().toLocaleDateString(undefined, options);
+        return currentDate;
+    }
+
+    // Function to add date
+      let curreDate = new Date();
+      let curreDateTime = curreDate.toString();
+      let formattedDate = curreDate.toLocaleDateString("en-US", {
+        month: "short",
+        day:"2-digit",
+        year:"numeric"
+      });
+      console.log(formattedDate);
+    //   document.getElementById('date-display').innerHTML = formattedDate
+     let dateDisplays = document.querySelectorAll('#date-display');
+
+    // Set the formatted date for each element
+    dateDisplays.forEach(function (dateDisplay) {
+        dateDisplay.innerHTML = formattedDate;})
+
 
     // Function to delete a note
     function deleteTodo(element) {
@@ -80,10 +148,42 @@
     }
 
 
-   
+//    Search filter
 
 
-       
+    const searchInput = document.querySelector('.search');
+
+    searchInput.addEventListener('input', function () {
+        const searchTerm = searchInput.value.toLowerCase();
+        filterNotes(searchTerm);
+    });
+
+    function filterNotes(searchTerm) {
+        const notes = todoList.querySelectorAll('li');
+
+        notes.forEach(function (note) {
+            const title = note.querySelector('.name').textContent.toLowerCase();
+            if (title.includes(searchTerm)) {
+                note.style.display = 'block';
+            } else {
+                note.style.display = 'none';
+            }
+        });
+    }      
+
+
+    // darkmode Feature
+    const darkModeToggle = document.getElementById('darkmode');
+const body = document.body;
+const wrapper = document.getElementById('wrapper');
+
+darkModeToggle.addEventListener('click', function () {
+    // Toggle dark mode styles on body and wrapper
+    body.classList.toggle('dark-mode');
+    wrapper.classList.toggle('dark-mode-wrapper');
+
+    // Save dark mode preference (optional, can be stored in localStorage)
+    const isDarkModeEnabled = body.classList.contains('dark-mode');})
     </script>
 </body>
 </html>
